@@ -3,6 +3,7 @@ import AuthLayout from "./auth/layout/AuthLayout"
 import LoginPage from "./auth/pages/LoginPage"
 import { lazy, Suspense } from "react"
 import Loading from "./shared/components/Loading"
+import PrivateRoute from "./auth/components/PrivateRoute"
 
 const MainLayout = lazy( () => import ('./layout/pages/MainLayout'))
 const RecoverPasswordPage = lazy( () => import ('./auth/pages/RecoverPasswordPage'))
@@ -19,7 +20,9 @@ export const AppRouter = () => {
                 </Route>
                 <Route path="/layout" element={
                     <Suspense fallback = {<Loading/>}>
-                        <MainLayout />
+                        <PrivateRoute>
+                            <MainLayout />
+                        </PrivateRoute>
                     </Suspense>
                 }>
                     <Route path="modulo1" element={<LoginPage />} />
