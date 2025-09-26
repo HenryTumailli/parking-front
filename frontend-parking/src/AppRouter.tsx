@@ -7,6 +7,7 @@ import PrivateRoute from "./auth/components/PrivateRoute"
 
 const MainLayout = lazy( () => import ('./layout/pages/MainLayout'))
 const RecoverPasswordPage = lazy( () => import ('./auth/pages/RecoverPasswordPage'))
+const UsersPage = lazy( () => import ('./administration/pages/UsersPage'))
 
 
 export const AppRouter = () => {
@@ -25,7 +26,7 @@ export const AppRouter = () => {
                         </PrivateRoute>
                     </Suspense>
                 }>
-                    <Route path="modulo1" element={<LoginPage />} />
+                    <Route path="admin/users" element={<UsersPage />} />
                     <Route path="modulo2" element={<RecoverPasswordPage />} />
                     <Route path="*" element={<div>No encontrado</div>} />
                 </Route>
