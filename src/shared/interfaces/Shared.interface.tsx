@@ -1,0 +1,1 @@
+export type Action = 'show' | 'edit' | 'delete'
