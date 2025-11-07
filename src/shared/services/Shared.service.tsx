@@ -10,9 +10,24 @@ export const getApiURL = () => {
   return `http://${getTenant()}.localhost:8000`;
 }
 
-export const openNotificationWithIcon = (api:NotificationInstance,type: NotificationType,message:string,description:string) => {
+export const openNotificationWithIcon = (api:NotificationInstance,type: NotificationType,message:string,description:string,details?:string[]) => {
+  let stringDetail = ""
+  if(details){
+    stringDetail = Object.entries(details)
+      .map(([field, messages]) => 
+        Array.isArray(messages)
+          ? `${field}: ${messages.join(', ')}`
+          : `${field}: ${messages}`
+      )
+      .join('\n');
+  }
+
   api[type]({
     message: message,
-    description: description,
+    description: (
+    <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+      {description + "\n" + stringDetail}
+    </pre>
+  ),
   });
 };

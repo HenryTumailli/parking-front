@@ -1,1 +1,1 @@
-export type Action = 'show' | 'edit' | 'delete'
+export type Action = 'create'|'show' | 'edit' | 'delete'

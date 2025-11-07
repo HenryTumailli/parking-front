@@ -60,7 +60,8 @@ export default function MainLayout() {
             icon: <FaGear />,
             label: 'Adminstración',
             children: [
-                { key: "1-1", label: <Link to="/layout/admin/users">Usuarios</Link>}
+                { key: "1-1", label: <Link to="/layout/admin/users">Usuarios</Link>},
+                { key: "1-2", label: <Link to="/layout/admin/permissions">Roles y Permisos</Link>}
             ]
         },
         { 
