@@ -1,10 +1,16 @@
 import type { NotificationInstance } from 'antd/es/notification/interface';
+import type { User } from '../../auth/interfaces/Auth.interface';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 export const getTenant = () => {
   return window.location.hostname.split(".")[0];
 };
+
+export const getTenantId = ():number => {
+  const user: User = JSON.parse(localStorage.getItem('user')!)
+  return user.tenant
+}
 
 export const getApiURL = () => {
   return `http://${getTenant()}.localhost:8000`;

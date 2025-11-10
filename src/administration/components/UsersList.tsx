@@ -1,72 +1,84 @@
-import { useEffect, useState } from "react";
-import { Button, notification, Space, Table, Tooltip } from "antd"
+import { Button, Space, Table, Tag, Tooltip } from "antd"
 import type { User } from "../../auth/interfaces/Auth.interface";
-import { getAllUsers } from "../services/Users.service";
-import { openNotificationWithIcon } from "../../shared/services/Shared.service";
-import { FaPenToSquare, FaTrash } from "react-icons/fa6";
+import { FaBan, FaCheck, FaPenToSquare } from "react-icons/fa6";
 import type { Action } from "../../shared/interfaces/Shared.interface";
+import type { Group } from "../interfaces/Administration.interface";
 
 const { Column } = Table;
 
 type TableProps = {
-  onAction: (user: User, action: Action) => void;
+    users: User[] | undefined
+    groups: Group[] | undefined
+    loading: boolean
+    onAction: (user: User, action: Action) => void;
 };
 
 
-function UsersList({onAction}:TableProps) {
-    const [allUsers, setAllUsers] = useState<User[]>([]);
-    const [loadingTable, setLoadingTable] = useState(false)
-    const [api, contextHolder] = notification.useNotification();
-
-    useEffect(() => {
-        getUsers();
-    }, []);
-        
-
-    const getUsers = async () => {
-        try {
-            setLoadingTable(true)
-            const users = await getAllUsers();
-            setAllUsers(users);
-            // console.log({ users });
-        }catch {
-            openNotificationWithIcon(
-                api,
-                'error',
-                'Usuarios',
-                'No se pudo obtener la lista de usuarios.'
-            )
-        } finally {
-            setLoadingTable(false);
-        }
-    };
-
+function UsersList({ users, loading, groups, onAction }: TableProps) {
     return (
         <>
-        {contextHolder}
-        <Table<User> style={{ width: "100%" }} dataSource={allUsers} loading={loadingTable} rowKey="id">
-            <Column title="Usuario" dataIndex="username" key="username" />
-            <Column title="Correo" dataIndex="email" key="address" />
-            <Column title="Estado" dataIndex="is_active" key="state" />
-            <Column
-                title="Acciones"
-                key="action"
-                render={(_: any, record: User) => (
-                    <Space size="middle">
-                        <Tooltip title="Eliminar">
-                            <Button type="text" danger icon={<FaTrash />} onClick={() => onAction(record,'delete')}/>
-                        </Tooltip>
-                        <Tooltip title="Editar">
-                            <Button type="text" icon={<FaPenToSquare />} style={{color: "blue"}} onClick={() => onAction(record,'edit')}/>
-                        </Tooltip>
-                        <Tooltip title="Ver">
-                            <Button type="text" icon={<FaPenToSquare />} style={{color: "blue"}} onClick={() => onAction(record,'show')}/>
-                        </Tooltip>
-                        {/* Borrar */} {record.id}
-                    </Space>
-                )}
-            />
-        </Table>
+            <Table<User> style={{ width: "100%" }} dataSource={users} loading={loading} rowKey="id">
+                <Column title="Usuario" dataIndex="username" key="username" />
+                <Column title="Correo" dataIndex="email" key="address" />
+                <Column title="Nombre" dataIndex="first_name" key="first_name" />
+                <Column title="Apellido" dataIndex="last_name" key="last_name" />
+                <Column
+                    title="Roles"
+                    dataIndex="groups"
+                    key="groups"
+                    render={(groupIds: number[]) => (
+                        <>
+                            {groupIds?.length ? (
+                                groupIds.map((id) => {
+                                    const name = groups?.find((g) => g.id === id)?.name || `ID ${id}`;
+                                    return (
+                                        <Tag key={id} color="blue" style={{ marginRight: 4 }}>
+                                            {name}
+                                        </Tag>
+                                    );
+                                })
+                            ) : (
+                                <Tag color="default">Sin rol</Tag>
+                            )}
+                        </>
+                    )}
+                />
+                <Column
+                    title="Estado"
+                    dataIndex="is_active"
+                    key="is_active"
+                    render={(isActive: boolean) => (
+                        <Tag color={isActive ? "green" : "red"}>
+                            {isActive ? "Activo" : "Inactivo"}
+                        </Tag>
+                    )}
+                />
+                <Column
+                    title="Acciones"
+                    key="action"
+                    render={(_: any, record: User) => (
+                        <Space size="middle">
+                            <Tooltip title="Editar">
+                                <Button
+                                    type="text"
+                                    icon={<FaPenToSquare />}
+                                    style={{ color: "blue" }}
+                                    onClick={() => onAction(record, "edit")}
+                                />
+                            </Tooltip>
+
+                            <Tooltip title={record.is_active ? "Desactivar" : "Activar"}>
+                                <Button
+                                    type="text"
+                                    icon={record.is_active ? <FaBan /> : <FaCheck />}
+                                    style={{ color: record.is_active ? "red" : "green" }}
+                                    onClick={() => onAction(record, "delete")}
+                                />
+                            </Tooltip>
+                        </Space>
+                    )}
+                />
+            </Table>
         </>
     )
 }

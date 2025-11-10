@@ -11,8 +11,10 @@ export interface AuthResponse {
 export interface User {
   id: number;
   username: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  role: string;
+  groups: string;
   tenant: number;
   date_joined: string;
   is_active: boolean;

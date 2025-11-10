@@ -36,8 +36,6 @@ function GroupsCrud({ group, action, groupForm,setLoading,onSaved }: GroupsCrudP
             openNotificationWithIcon(api, 'success', 'Roles', 'Información guardada correctamente.');
             onSaved();
         } catch (error:any) {
-            console.log(error);
-            
             openNotificationWithIcon(
                 api,
                 'error',
